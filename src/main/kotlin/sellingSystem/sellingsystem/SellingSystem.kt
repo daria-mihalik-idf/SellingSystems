@@ -1,11 +1,15 @@
 package sellingSystem.sellingsystem
 
 import sellingSystem.plant.entity.PlantEntity
+import sellingSystem.plant.entity.PlantStock
 
 interface SellingSystem {
-  val plantEntity: PlantEntity
 
-  fun getStocks()
+  fun getStocks(): PlantStock?
 
-//  fun orderPlant(type: PlantType): String
+  fun getPositionById(id: Int, quantity: Int): MutableList<PlantEntity>
+
+  fun countWithDiscount(discount: Int, cart: MutableList<PlantEntity>, count: Int): Int
+
+  fun rewriteYaml(list: MutableList<PlantEntity>)
 }

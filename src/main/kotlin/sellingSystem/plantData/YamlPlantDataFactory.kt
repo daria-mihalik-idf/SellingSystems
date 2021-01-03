@@ -1,19 +1,31 @@
 package sellingSystem.plantData
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import sellingSystem.plant.entity.PlantEntity
+import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.introspector.BeanAccess
+import sellingSystem.plant.entity.PlantStock
+import java.io.BufferedInputStream
+import java.io.InputStream
 
 class YamlPlantDataFactory : PlantDataProvider {
 
-  override val filePath: String = "database.yaml"
+  override val filePath: String = "plantlist.yaml"
 
-  override fun getPlantData(): PlantEntity {
-    return Thread.currentThread().contextClassLoader.getResourceAsStream(filePath).use {
-      ObjectMapper(YAMLFactory()).registerModule(KotlinModule())
-          .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true).readValue(it, PlantEntity::class.java)
+  override fun getPlantData(): PlantStock? {
+    return parseYamlAsUsingFieldAccess(filePath, PlantStock::class.java)
+  }
+
+  private fun <T> parseYamlAsUsingFieldAccess(fileUrl: String, clazz: Class<T>): T? {
+    var mapping: T? = null
+    val inputStream = loadResourceAsStream(fileUrl) ?: return mapping
+    BufferedInputStream(inputStream).use { bis ->
+      val yaml = Yaml()
+      yaml.setBeanAccess(BeanAccess.FIELD)
+      mapping = yaml.loadAs(bis, clazz)
     }
+    return mapping
+  }
+
+  private fun loadResourceAsStream(fileUrl: String): InputStream? {
+    return object {}.javaClass.classLoader.getResourceAsStream(fileUrl)
   }
 }

@@ -1,14 +1,11 @@
 package sellingSystem.plantData
 
-import sellingSystem.plant.entity.PlantEntity
+import sellingSystem.plant.entity.PlantStock
 
 class PlantDataProviderManager {
-  fun getPlantData(file: FileType): PlantEntity {
+  fun getPlantData(file: DataSource): PlantStock? {
     return when (file) {
-      FileType.JSON -> {
-        JsonPlantDataFactory().getPlantData()
-      }
-      FileType.YAML -> {
+      DataSource.YAML -> {
         YamlPlantDataFactory().getPlantData()
       }
     }
