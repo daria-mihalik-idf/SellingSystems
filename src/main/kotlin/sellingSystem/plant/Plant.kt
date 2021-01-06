@@ -1,10 +1,18 @@
 package sellingSystem.plant
 
+import sellingSystem.plant.entity.PlantData
+
 interface Plant {
   var id: Int?
-  var type: String?
-  var name: String?
-  var price: Int?
+  var plant: List<PlantData>?
+  var price: Int
   var quantity: Int?
-  var dateReceived: String?
+  var dateReceived: String
+  var dateSold: String
 }
+
+interface IPlantForSale : Plant, Sellable
+
+interface IFlowerForSale : IPlantForSale
+
+interface ITreeForSale : IPlantForSale

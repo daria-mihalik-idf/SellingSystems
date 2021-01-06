@@ -1,57 +1,36 @@
 import sellingSystem.plant.entity.PlantEntity
-import sellingSystem.sellingsystem.PlantWrapper
+import sellingSystem.sellingsystem.Seller
 
 const val DISCOUNT_10 = 10
 const val PROFIT_PERCENT = 30
 
+fun main() {
 
-class Main {
-  companion object {
-    @JvmStatic
-    fun main(args: Array<String>) {
-      println("Hello! Today we offer you:")
-      val stock = PlantWrapper()
-      stock.getStocks()
+  val cart: MutableList<PlantEntity> = mutableListOf()
+  val stock : MutableList<PlantEntity>
+  var count = 0
 
-      val cart = mutableListOf<PlantEntity>()
-      println("Would you like smth to buy? (Y/N)")
-      var action = readLine()
+  var quantityPlant: Int? = 0
 
-      var count = 0
-      val map = emptyMap<String?, Int?>().toMutableMap()
+  val seller: Seller = Seller()
+  seller.sayHello()
 
-      while (action?.toUpperCase().equals("Y") && !action.isNullOrBlank() && action.isNotEmpty()) {
-        println("Type position to buy: ")
-        val inputText = readLine()
+  stock = seller.getStocks()
+  var action = seller.askForBuying()
+  if (seller.isWarehouseNotEmpty()) {
+    while (action) {
+      val id: Int = seller.askForPositionToBuy(stock)
 
-        println("Type quantity: ")
-        val quantityPlant = readLine()?.toInt()
-        val position = stock.getPositionById(inputText?.toInt()!!, quantityPlant!!)
+      quantityPlant = seller.askForQuantity()
 
-        if (position.isNotEmpty()) {
-          println("Position was added to cart -> ${position[position.lastIndex].name} : $quantityPlant")
-          map[position[position.lastIndex].name] = quantityPlant
-          cart.add(count++, position[0])
-        }
+      val position: MutableList<PlantEntity> = seller.getPositionById(id, quantityPlant, stock)
 
-        println("Would you like to continue? (Y/N)")
-        action = readLine()
+      seller.fillCart(position, cart, quantityPlant, count++)
 
-        val discount = stock.countWithDiscount(DISCOUNT_10, cart, quantityPlant)
-        if (cart.isNotEmpty()) {
-          println("Total price with discount($DISCOUNT_10 %): $discount")
-
-          println("Full list of sold plants: ")
-          map.forEach {
-            println("${it.key} : ${it.value}")
-          }
-          println("Total profit ${stock.getProfit(discount, PROFIT_PERCENT)}")
-          println("Sold date ${stock.getSoldDate()}")
-        }
-      }
-      if (action?.toUpperCase().equals("N")) {
-        println("bye")
-      }
+      action = seller.askForContinuation()
     }
+    seller.getOrder(cart)
+  } else {
+    seller.sayBye()
   }
 }

@@ -8,7 +8,7 @@ import java.io.InputStream
 
 class YamlPlantDataFactory : PlantDataProvider {
 
-  override val filePath: String = "plantlist.yaml"
+  override val filePath: String = "plantList.yaml"
 
   override fun getPlantData(): PlantStock? {
     return parseYamlAsUsingFieldAccess(filePath, PlantStock::class.java)

@@ -1,15 +1,28 @@
 package sellingSystem.sellingsystem
 
 import sellingSystem.plant.entity.PlantEntity
-import sellingSystem.plant.entity.PlantStock
 
 interface SellingSystem {
 
-  fun getStocks(): PlantStock?
+  fun getStocks(): MutableList<PlantEntity>
 
-  fun getPositionById(id: Int, quantity: Int): MutableList<PlantEntity>
+  fun getPositionById(id: Int, quantityPlant: Int, stock: MutableList<PlantEntity>): MutableList<PlantEntity>
 
-  fun countWithDiscount(discount: Int, cart: MutableList<PlantEntity>, count: Int): Int
+  fun countWithDiscount(discount: Int, cart: MutableList<PlantEntity>): Int
 
-  fun rewriteYaml(list: MutableList<PlantEntity>)
+  fun sayHello()
+
+  fun sayBye()
+
+  fun askForContinuation(): Boolean
+
+  fun askForPositionToBuy(stock: MutableList<PlantEntity>): Int
+
+  fun askForQuantity(): Int
+
+  fun askForBuying(): Boolean
+
+  fun getOrder(cart: MutableList<PlantEntity>)
+
+  fun fillCart(position: MutableList<PlantEntity>, cart: MutableList<PlantEntity>, quantityPlant: Int, count: Int)
 }
