@@ -1,31 +1,25 @@
 package sellingSystem.plantData
 
-import org.yaml.snakeyaml.Yaml
-import org.yaml.snakeyaml.introspector.BeanAccess
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import sellingSystem.plant.entity.PlantStock
-import java.io.BufferedInputStream
-import java.io.InputStream
 
 class YamlPlantDataFactory : PlantDataProvider {
 
   override val filePath: String = "plantList.yaml"
 
-  override fun getPlantData(): PlantStock? {
-    return parseYamlAsUsingFieldAccess(filePath, PlantStock::class.java)
+  override fun getPlantData(): PlantStock {
+    return resourceFileToObject(filePath, PlantStock::class.java) ?: throw IllegalStateException(
+        "Data Source is empty")
   }
 
-  private fun <T> parseYamlAsUsingFieldAccess(fileUrl: String, clazz: Class<T>): T? {
-    var mapping: T? = null
-    val inputStream = loadResourceAsStream(fileUrl) ?: return mapping
-    BufferedInputStream(inputStream).use { bis ->
-      val yaml = Yaml()
-      yaml.setBeanAccess(BeanAccess.FIELD)
-      mapping = yaml.loadAs(bis, clazz)
+  @Suppress("UNCHECKED_CAST")
+  fun <T> resourceFileToObject(filePath: String, objectClass: Class<T>): T? {
+    return Thread.currentThread().contextClassLoader.getResourceAsStream(filePath)?.use {
+      ObjectMapper(YAMLFactory())
+          .registerModule(KotlinModule())
+          .readValue(it, objectClass)
     }
-    return mapping
-  }
-
-  private fun loadResourceAsStream(fileUrl: String): InputStream? {
-    return object {}.javaClass.classLoader.getResourceAsStream(fileUrl)
   }
 }

@@ -1,36 +1,24 @@
-import sellingSystem.plant.entity.PlantEntity
 import sellingSystem.sellingsystem.Seller
 
 const val DISCOUNT_10 = 10
 const val PROFIT_PERCENT = 30
 
 fun main() {
+  val seller:Seller = Seller()
+  var count:Int = 0
 
-  val cart: MutableList<PlantEntity> = mutableListOf()
-  val stock : MutableList<PlantEntity>
-  var count = 0
-
-  var quantityPlant: Int? = 0
-
-  val seller: Seller = Seller()
   seller.sayHello()
-
-  stock = seller.getStocks()
-  var action = seller.askForBuying()
   if (seller.isWarehouseNotEmpty()) {
-    while (action) {
-      val id: Int = seller.askForPositionToBuy(stock)
+    var isReadyToBuy = seller.askForBuying()
+    while (isReadyToBuy) {
 
-      quantityPlant = seller.askForQuantity()
+      seller.fillCart(count++)
 
-      val position: MutableList<PlantEntity> = seller.getPositionById(id, quantityPlant, stock)
-
-      seller.fillCart(position, cart, quantityPlant, count++)
-
-      action = seller.askForContinuation()
+      isReadyToBuy = seller.askForContinuation()
     }
-    seller.getOrder(cart)
+    seller.getFinalCalculation()
   } else {
-    seller.sayBye()
+    seller.noSalesToday()
   }
+  seller.sayBye()
 }

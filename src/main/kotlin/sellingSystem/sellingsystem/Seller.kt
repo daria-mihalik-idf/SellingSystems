@@ -3,41 +3,44 @@ package sellingSystem.sellingsystem
 import DISCOUNT_10
 import PROFIT_PERCENT
 import sellingSystem.plant.entity.PlantEntity
+import sellingSystem.plant.entity.PlantStock
 import sellingSystem.plantData.DataSource
 import sellingSystem.plantData.PlantDataProviderManager
 
-class Seller : SellingSystem {
+class Seller : SellingSystem, Warehouse, Cart {
 
-  private val value = PlantDataProviderManager().getPlantData(DataSource.YAML)
+  private val plantStock: PlantStock = PlantDataProviderManager().getPlantData(DataSource.YAML)
+  private val cart: MutableList<PlantEntity> = mutableListOf()
+  private val stock: MutableList<PlantEntity> = mutableListOf()
+  var quant: Int = 0
 
-  var isWarehouseNotEmpty = {
-    var result = 0
-    for (i in 0..value?.entity?.lastIndex!!) {
-      result += value.entity!![i].quantity!!
+  override fun isWarehouseNotEmpty(): Boolean {
+    var quantity:Int = 0
+    var result: Boolean = false
+    stock.filter {
+      quantity += it.quantity!!
+      result = quantity > 0
+      return result
     }
-    result > 0
+    return result
   }
 
   override fun getStocks(): MutableList<PlantEntity> {
-    val stock: MutableList<PlantEntity> = mutableListOf()
-    for ((count, i) in (0..value?.entity?.lastIndex!!).withIndex()) {
-      stock.add(count, value.entity!![i])
-      println("id = ${value.entity!![i].id} " +
-          "name = ${value.entity!![i].plant?.get(0)?.name} " +
-          "type = ${value.entity!![i].plant?.get(0)?.type} " +
-          "price = ${value.entity!![i].price} " +
-          "quantity = ${value.entity!![i].quantity} " +
-          "date received = ${value.entity!![i].dateReceived} ")
+    for ((count, i) in (0..plantStock.entity.lastIndex).withIndex()) {
+      stock.add(count, plantStock.entity[i])
     }
+    stock.forEach { println(it.toString()) }
     return stock
   }
 
-  override fun getPositionById(id: Int, quantityPlant: Int, stock: MutableList<PlantEntity>): MutableList<PlantEntity> {
+  override fun getPositionById(): MutableList<PlantEntity> {
     val positionByIndexList = mutableListOf<PlantEntity>()
+    val ids = askForPositionToBuy(stock)
+    quant = askForQuantity()
     stock.forEach {
-      if (it.id!! == id) {
+      if (it.id!! == ids) {
         if (it.quantity!! > 0) {
-          val result = it.quantity!! - quantityPlant
+          val result = it.quantity!! - quant
           it.quantity = result
           positionByIndexList.add(it)
         } else {
@@ -52,16 +55,28 @@ class Seller : SellingSystem {
   }
 
   override fun countWithDiscount(discount: Int, cart: MutableList<PlantEntity>): Int {
-    var total = 0
+    var total:Int = 0
     cart.forEach {
       total += it.price * it.quantity!!
     }
-    total -= (total * discount / 100)
+
+    when (discount) {
+      in 1..99 -> {
+        total -= (total * discount / 100)
+      }
+      0 -> {
+        println("Price without discount")
+      }
+      else -> {
+        throw IllegalArgumentException("Can't be sold with 100% discount. Pls, verify it")
+      }
+    }
     return total
   }
 
   override fun sayHello() {
     println("Hello! Today we offer you:")
+    getStocks()
   }
 
   override fun sayBye() {
@@ -70,13 +85,13 @@ class Seller : SellingSystem {
 
   override fun askForContinuation(): Boolean {
     println("Would you like to continue? (Y/N)")
-    return readLine()!!.toUpperCase().equals("Y")
+    return readLine()!!.toUpperCase() == "Y"
   }
 
   override fun askForPositionToBuy(stock: MutableList<PlantEntity>): Int {
     println("Type position to buy: ")
-    val lastId = stock[stock.lastIndex].id!!
     var position = readLine()?.toInt()!!
+    val lastId = stock[stock.lastIndex].id!!
     while (lastId < position) {
       println("Position with this index is absent. Please type other one...")
       position = readLine()?.toInt()!!
@@ -92,10 +107,10 @@ class Seller : SellingSystem {
   override fun askForBuying(): Boolean {
     println("Would you like smth to buy? (Y/N)")
     val action: String = readLine()!!
-    return action.toUpperCase().equals("Y")
+    return action.toUpperCase() == "Y"
   }
 
-  override fun getOrder(cart: MutableList<PlantEntity>) {
+  override fun getFinalCalculation() {
     if (!cart.isNullOrEmpty()) {
       val discount: Int = countWithDiscount(DISCOUNT_10, cart)
       if (cart.isNotEmpty()) {
@@ -116,12 +131,16 @@ class Seller : SellingSystem {
     }
   }
 
-  override fun fillCart(position: MutableList<PlantEntity>, cart: MutableList<PlantEntity>, quantityPlant: Int,
-      count: Int) {
+  override fun fillCart(count: Int) {
+    val position: MutableList<PlantEntity> = getPositionById()
     if (position.isNotEmpty()) {
       position[0].dateSold = PlantWrapper().getSoldDate().toString()
       cart.add(count, position[0].copy())
-      cart[cart.lastIndex].quantity = quantityPlant
+      cart[cart.lastIndex].quantity = quant
     }
+  }
+
+  fun noSalesToday() {
+    println("")
   }
 }

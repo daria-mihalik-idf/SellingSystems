@@ -2,7 +2,7 @@ package sellingSystem.plant.entity
 
 import sellingSystem.plant.Plant
 
-data class PlantStock(var entity: List<PlantEntity>? = emptyList())
+data class PlantStock(var entity: MutableList<PlantEntity> = mutableListOf())
 
 data class PlantData(var type: String = "",
     var name: String = "")
