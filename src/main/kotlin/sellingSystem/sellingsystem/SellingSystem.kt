@@ -6,9 +6,8 @@ interface SellingSystem {
   fun isWarehouseNotEmpty(): Boolean
   fun sayHello()
   fun sayBye()
-  fun askForContinuation(): Boolean
-  fun askForPositionToBuy(stock: MutableList<PlantEntity>): Int
+  fun askForPositionToBuy(): Int
   fun askForQuantity(): Int
   fun askForBuying(): Boolean
-  fun getFinalCalculation()
+  fun getFinalCalculation(cart:MutableList<PlantEntity>)
 }
