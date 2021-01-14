@@ -3,6 +3,9 @@ package sellingSystem.sellingsystem
 import sellingSystem.plant.entity.PlantEntity
 
 interface ICart {
-  fun countWithDiscount(discount: Int, cart: MutableList<PlantEntity>): Int
-  fun fillCart(count: Int, position: MutableList<PlantEntity>, cart: MutableList<PlantEntity>, quant: Int)
+  fun countWithDiscount(discount: Int): Int
+  fun isCardEmpty(): Boolean
+  fun getCartCalculation(): Int
+  fun printCart()
+  fun addPositionToCard(plantEntityToCard: List<PlantEntity>)
 }

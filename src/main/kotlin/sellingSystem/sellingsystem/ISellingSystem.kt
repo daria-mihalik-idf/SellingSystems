@@ -1,13 +1,13 @@
 package sellingSystem.sellingsystem
 
-import sellingSystem.plant.entity.PlantEntity
-
-interface SellingSystem {
+interface ISellingSystem {
   fun isWarehouseNotEmpty(): Boolean
   fun sayHello()
   fun sayBye()
   fun askForPositionToBuy(): Int
   fun askForQuantity(): Int
   fun askForBuying(): Boolean
-  fun getFinalCalculation(cart:MutableList<PlantEntity>)
+  fun getFinalCalculation()
+  fun addToCard(position: Int, quantity: Int)
+  fun noSalesToday()
 }

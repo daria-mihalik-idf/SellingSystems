@@ -3,33 +3,48 @@ package sellingSystem.sellingsystem
 import sellingSystem.plant.Sellable
 import sellingSystem.plant.entity.PlantEntity
 
-object Cart : ICart, Sellable {
+class Cart : ICart, Sellable {
+  private var cartStorage: MutableList<PlantEntity> = mutableListOf()
 
-  override fun countWithDiscount(discount: Int, cart: MutableList<PlantEntity>): Int {
-    var total: Int = 0
-    cart.forEach {
-      total += it.price * it.quantity!!
+  override fun printCart() {
+    cartStorage.forEach {
+      println("Position : ${it.plant?.get(0)?.name}; quantity: ${it.quantity}; date of sold : ${it.dateSold}")
     }
+  }
 
-    when (discount) {
-      in 1..99 -> {
-        total -= (total * discount / 100)
-      }
-      0 -> {
-        println("Price without discount")
-      }
-      else -> {
-        throw IllegalArgumentException("Can't be sold with 100% discount. Pls, verify it")
-      }
+  override fun addPositionToCard(plantEntityToCard: List<PlantEntity>) {
+    plantEntityToCard[plantEntityToCard.lastIndex].dateSold = getSoldDate().toString()
+    cartStorage.addAll(plantEntityToCard)
+  }
+
+  override fun isCardEmpty(): Boolean {
+    return cartStorage.isEmpty()
+  }
+
+  override fun getCartCalculation(): Int {
+    var total: Int = 0
+
+    cartStorage.forEach {
+      total += it.price * it.quantity
     }
     return total
   }
 
-  override fun fillCart(count: Int, position: MutableList<PlantEntity>, cart: MutableList<PlantEntity>, quant: Int) {
-    if (position.isNotEmpty()) {
-      position[0].dateSold = getSoldDate().toString()
-      cart.add(count, position[0].copy())
-      cart[cart.lastIndex].quantity = quant
+  override fun countWithDiscount(discount: Int): Int {
+    val totalPrice = getCartCalculation()
+    var totalPriceWithDiscount = 0
+    when (discount) {
+      in 1..99 -> {
+        totalPriceWithDiscount = (totalPrice * (100 - discount) / 100)
+      }
+      0 -> {
+        totalPriceWithDiscount = totalPrice
+        println("Price without discount")
+      }
+      else -> {
+        throw IllegalArgumentException("Discount percent  $discount is invalid. Pls, verify it")
+      }
     }
+    return totalPriceWithDiscount
   }
 }

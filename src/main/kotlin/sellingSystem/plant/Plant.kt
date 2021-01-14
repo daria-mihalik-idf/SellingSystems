@@ -6,7 +6,7 @@ interface Plant {
   var id: Int?
   var plant: List<PlantData>?
   var price: Int
-  var quantity: Int?
+  var quantity: Int
   var dateReceived: String
   var dateSold: String
 }
