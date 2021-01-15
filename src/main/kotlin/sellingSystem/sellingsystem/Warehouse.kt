@@ -4,6 +4,7 @@ import sellingSystem.plant.entity.PlantEntity
 import sellingSystem.plant.entity.PlantStock
 import sellingSystem.plantData.DataSource
 import sellingSystem.plantData.PlantDataProviderManager
+import java.util.stream.Collectors
 
 class Warehouse : IWarehouse {
   private val plantStock: PlantStock = PlantDataProviderManager().getPlantData(DataSource.YAML)
@@ -19,21 +20,10 @@ class Warehouse : IWarehouse {
     }
   }
 
-  override fun getFromStocks(position: Int, quantity: Int): PlantEntity? {
-    stock.forEach {
-      if (it.id!! == position) {
-        return if (it.quantity > 0) {
-          val result = it.quantity - quantity
-          it.quantity = result
-          it.copy(quantity = quantity)
-        } else {
-          println("Quantity number is ${it.quantity}. Please reduce quantity")
-          null
-        }
-      }
-    }
-    println("Choose other position")
-
-    return null
+  override fun getFromStocks(position: Int, plantQuantity: Int): PlantEntity {
+    val value = stock.filter { it.id == position && it.quantity > 0 }
+    val result = value[0].quantity - plantQuantity
+    value[0].quantity = result
+    return value[0].copy(quantity = plantQuantity)
   }
 }
