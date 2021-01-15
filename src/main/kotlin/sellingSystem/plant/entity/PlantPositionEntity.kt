@@ -9,7 +9,7 @@ data class PlantData(var type: String = "",
 
 data class PlantEntity(
     override var id: Int? = 0,
-    override var plant: List<PlantData>? = emptyList(),
+    override var plant: PlantData,
     override var price: Int = 0,
     override var quantity: Int = 0,
     override var dateReceived: String = "",

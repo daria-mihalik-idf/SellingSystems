@@ -7,5 +7,5 @@ interface ICart {
   fun isCardEmpty(): Boolean
   fun getCartCalculation(): Int
   fun printCart()
-  fun addPositionToCard(plantEntityToCard: List<PlantEntity>)
+  fun addPositionToCard(plantEntityToCard: PlantEntity)
 }

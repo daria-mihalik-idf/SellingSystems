@@ -4,7 +4,7 @@ import sellingSystem.plant.entity.PlantData
 
 interface Plant {
   var id: Int?
-  var plant: List<PlantData>?
+  var plant: PlantData
   var price: Int
   var quantity: Int
   var dateReceived: String

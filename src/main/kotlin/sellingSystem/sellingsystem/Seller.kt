@@ -53,8 +53,10 @@ class Seller : ISellingSystem, Sellable {
   }
 
   override fun addToCard(position: Int, quantity: Int) {
-    val plantFromWarehouse: List<PlantEntity> = warehouse.getFromStocks(position, quantity)
-    cart.addPositionToCard(plantFromWarehouse)
+    val plantFromWarehouse: PlantEntity? = warehouse.getFromStocks(position, quantity)
+    plantFromWarehouse?.let {
+      cart.addPositionToCard(it)
+    }
   }
 
   private fun printOrder(finalPrice: Int, discount: Int = 0) {

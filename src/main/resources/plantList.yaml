@@ -2,7 +2,7 @@
 entity:
   - id: 1
     plant:
-      - type: flower
+        type: flower
         name: ROSE
     price: 300
     quantity: 20
@@ -10,7 +10,7 @@ entity:
     dateSold: ""
   - id: 2
     plant:
-      - type: flower
+        type: flower
         name: GERBERA2
     price: 300
     quantity: 20
@@ -18,7 +18,7 @@ entity:
     dateSold: ""
   - id: 3
     plant:
-      - type: flower
+        type: flower
         name: GERBERA3
     price: 300
     quantity: 20
@@ -26,7 +26,7 @@ entity:
     dateSold: ""
   - id: 4
     plant:
-      - type: tree
+        type: tree
         name: GERBERA4
     price: 300
     quantity: 20

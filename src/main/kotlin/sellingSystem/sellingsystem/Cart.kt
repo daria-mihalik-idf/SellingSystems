@@ -8,13 +8,13 @@ class Cart : ICart, Sellable {
 
   override fun printCart() {
     cartStorage.forEach {
-      println("Position : ${it.plant?.get(0)?.name}; quantity: ${it.quantity}; date of sold : ${it.dateSold}")
+      println("Position : ${it.plant.name}; quantity: ${it.quantity}; date of sold : ${it.dateSold}")
     }
   }
 
-  override fun addPositionToCard(plantEntityToCard: List<PlantEntity>) {
-    plantEntityToCard[plantEntityToCard.lastIndex].dateSold = getSoldDate().toString()
-    cartStorage.addAll(plantEntityToCard)
+  override fun addPositionToCard(plantEntityToCard: PlantEntity) {
+    plantEntityToCard.dateSold = getSoldDate().toString()
+    cartStorage.add(plantEntityToCard)
   }
 
   override fun isCardEmpty(): Boolean {
