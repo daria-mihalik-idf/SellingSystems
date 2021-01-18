@@ -3,17 +3,17 @@ package sellingSystem.sellingsystem
 import sellingSystem.plant.Sellable
 import sellingSystem.plant.entity.PlantEntity
 
-class Cart : ICart, Sellable {
+class Cart : ICart {
   private var cartStorage: MutableList<PlantEntity> = mutableListOf()
 
   override fun printCart() {
     cartStorage.forEach {
-      println("Position : ${it.plant.name}; quantity: ${it.quantity}; date of sold : ${it.dateSold}")
+      println("Entity : ${it.plant.name}; quantity: ${it.quantity}; date of sold : ${it.dateSold} ")
     }
   }
 
   override fun addPositionToCard(plantEntityToCard: PlantEntity) {
-    plantEntityToCard.dateSold = getSoldDate().toString()
+    plantEntityToCard.dateSold = plantEntityToCard.getSoldDate()
     cartStorage.add(plantEntityToCard)
   }
 

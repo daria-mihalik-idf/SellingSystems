@@ -1,13 +1,16 @@
 package sellingSystem.sellingsystem
 
+import sellingSystem.plantData.PlantName
+
 interface ISellingSystem {
   fun isWarehouseNotEmpty(): Boolean
   fun sayHello()
   fun sayBye()
-  fun askForPositionToBuy(): Int
+  fun askForPositionToBuy(): PlantName
   fun askForQuantity(): Int
   fun askForBuying(): Boolean
   fun getFinalCalculation()
-  fun addToCard(position: Int, quantity: Int)
+  fun addToCard(name: PlantName, quantity: Int)
+  fun printProfitInfo()
   fun noSalesToday()
 }

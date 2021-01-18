@@ -1,34 +1,32 @@
 ---
 entity:
-  - id: 1
-    plant:
+  - plant:
         type: flower
         name: ROSE
     price: 300
-    quantity: 20
+    quantity: 1
     dateReceived: 2017-11-13
     dateSold: ""
-  - id: 2
-    plant:
+  - plant:
         type: flower
-        name: GERBERA2
+        name: GERBERA
     price: 300
     quantity: 20
     dateReceived: 2017-11-13
     dateSold: ""
-  - id: 3
-    plant:
-        type: flower
-        name: GERBERA3
-    price: 300
-    quantity: 20
-    dateReceived: 2017-11-13
-    dateSold: ""
-  - id: 4
-    plant:
-        type: tree
-        name: GERBERA4
-    price: 300
-    quantity: 20
-    dateReceived: 2017-11-13
-    dateSold: ""
+#  - id: 3
+#    plant:
+#        type: flower
+#        name: GERBERA3
+#    price: 300
+#    quantity: 20
+#    dateReceived: 2017-11-13
+#    dateSold: ""
+#  - id: 4
+#    plant:
+#        type: tree
+#        name: GERBERA4
+#    price: 300
+#    quantity: 20
+#    dateReceived: 2017-11-13
+#    dateSold: ""

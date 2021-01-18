@@ -2,8 +2,10 @@ package sellingSystem.sellingsystem
 
 import sellingSystem.plant.Sellable
 import sellingSystem.plant.entity.PlantEntity
+import sellingSystem.plantData.PlantName
 
 private const val DISCOUNT_10 = 10
+const val PROFIT_PERCENT = 30
 
 class Seller : ISellingSystem, Sellable {
   private var warehouse: IWarehouse = Warehouse()
@@ -19,15 +21,17 @@ class Seller : ISellingSystem, Sellable {
 
   override fun sayBye() {
     println("Bye")
+
   }
 
   private fun printStock() {
     println(warehouse.getStocks())
   }
 
-  override fun askForPositionToBuy(): Int {
-    println("Type position to buy: ")
-    return readLine()?.toInt()!!
+  override fun askForPositionToBuy(): PlantName {
+    println("Type name to buy: ")
+    val plantName = readLine()?.toUpperCase()?:throw IllegalArgumentException("Incorrect plant name")
+    return PlantName.valueOf(plantName)
   }
 
   override fun askForQuantity(): Int {
@@ -47,13 +51,13 @@ class Seller : ISellingSystem, Sellable {
       println("We have no order")
     } else {
       val discount = DISCOUNT_10
-      val countWithDiscount = cart.countWithDiscount(discount)
-      printOrder(countWithDiscount, discount)
+      val finalPrice = cart.countWithDiscount(discount)
+      printOrder(finalPrice, discount)
     }
   }
 
-  override fun addToCard(position: Int, quantity: Int) {
-    val plantFromWarehouse: PlantEntity? = warehouse.getFromStocks(position, quantity)
+  override fun addToCard(name: PlantName, quantity: Int) {
+    val plantFromWarehouse: PlantEntity? = warehouse.getFromStocks(name, quantity)
     plantFromWarehouse?.let {
       cart.addPositionToCard(it)
     }
@@ -63,6 +67,20 @@ class Seller : ISellingSystem, Sellable {
     println("==============================")
     println("=============Total============")
     println("Total price ($discount %): $finalPrice")
+
+    println("==============================")
+    println("Full list of sold plants: ")
+    cart.printCart()
+    println("==============================")
+  }
+
+  override fun printProfitInfo() {
+    val profitPercent = PROFIT_PERCENT
+    val finalProfit = cart.countWithDiscount(profitPercent) * 0.3
+
+    println("==============================")
+    println("=============Total profit============")
+    println("Total profit ($profitPercent %): $finalProfit")
 
     println("==============================")
     println("Full list of sold plants: ")
